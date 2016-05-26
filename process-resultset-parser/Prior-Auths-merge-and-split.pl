@@ -33,9 +33,6 @@ my ($m_fh, $c_fh , $s_fh);                        # filehandles
 
 foreach my $m_fn (@master_files){
    
-     my $s_fn = 'SQL_' . $m_fn;
-
-
      ##  extract completes and pendings from master
      (my @completes, my @pendings) = get_completes_and_pendings($m_fn);
      
@@ -54,6 +51,8 @@ foreach my $m_fn (@master_files){
      ## append records
      append_records(\@records, $m_fn);
      
+     ## reporting
+     ##
 }
 
 sub slurp
@@ -108,7 +107,7 @@ sub add_completed
    open my $complete_fh, ">>", $complete_fn or die "$complete_fh: $!"; 
    # Add completes to existing file.
    $complete_csv->say ($complete_fh, $_) for @completes;
-   close $complete_fh or die "could not close file $complete_csv: $!";  \
+   close $complete_fh or die "add_completed: Could not close file $complete_fn: $!";  \
    
    return;
    
@@ -117,7 +116,7 @@ sub add_completed
 sub  erase_master
 {
     my $fname = shift;
-    unlink $fname or warn "Could not erase $file: $!";
+    unlink $fname or warn "erase_master: Could not erase $fname: $!";
     return;
     
 }
@@ -126,24 +125,54 @@ sub pendings_to_master
 {
    my @rows = @{$_[0]};
    my $master_filename = $_[1];
-     ## needs work
-  return;
+   # Create csv object
+   my $work_csv = Text::CSV_XS->new ({ binary => 1, eol => $/ });
+   
+   # Open the new master filename
+   open my $master_fh, ">>", $master_filename or die "$master_filename: $!"; 
+   # Add pendings to master
+   $work_csv->say ($master_fh, $_) for @rows;
+   close $master_fh or die "pendinds_to_master: Could not close file $master_filename: $!";  \
+   
+   return;
      
 }
 
 sub  read_new
 {
    my $master_filename = shift;
-     ##news work slurp call?
-     my @newrows;
+   my $s_fn = 'SQL_' . $master_filename;
+   
+   my $csv = Text::CSV_XS->new ({ binary => 1 });
+   open my $ion, "<", $s_fn or die "cannot open $s_fn : $!";
+
+   my @new_rows; 
+   while (my $row = $csv->getline ($ion)) {
+      
+      push @new_rows, $row;
+      
+   }
+   close $ion or die "no close for $s_fn: $!";
      
-     return (\@newrows);
+   return (\@newrows);
 }
      
 sub append_records
 {
-   my @recs = @{$_[0]};
+   my $newrows = @{$_[0]};  
    my $master_filename = $_[1];
-   #needs work
+    
+   # Create csv object
+   my $master_csv = Text::CSV_XS->new ({ binary => 1, eol => $/ });
+  # Open the master. 
+   my $master_fn = $master_filename;
+   open my $master_fh, ">>", $master_fn or die "$master_fn: $!"; 
+   
+   ##may be i need to add-take to newrows here.
+   ##
+   ##  
+   # Add completes to existing file.
+   $master_csv->say ($master_fh, $_) for @newrows;
+   close $master_fh or die "append_records: Could not close file $master_filename: $!";  \
    return;
 }
