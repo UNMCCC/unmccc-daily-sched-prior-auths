@@ -1,9 +1,15 @@
 #
 #  Perl script Prior-Auths-merge-and-split    Inigo San Gil, May 2016
 #  
-#  Description:
-# -- array of filenames (6 master, 6 originals*, 6 completes)
+#  Requisites and dependencies
+#     Needs Perl, and CPAN extension Text::CSV_XS
+#     The six master files
+#     The six new csv files from queries
+#     The six completed files to log
+#     Optionally, a log / reporting file
 #
+#  Description:
+# 
 # For each file (mo/ro; chemo; medicare [ x2] ) :
 #
 #  -- open master, complete, original.
@@ -98,13 +104,12 @@ sub add_completed
 {
    my @completes = @{$_[0]};
    my $master_filename = $_[1];
-   my $complete_fn = 'COMPLETE_' . $m_fn;    
+   my $complete_fn = 'COMPLETE_' . $master_filename;    
   # Create csv object
    my $complete_csv = Text::CSV_XS->new ({ binary => 1, eol => $/ });
    
   # Open the completes. 
-   my $complete_fn = 'COMPLETE_' . $master_filename;
-   open my $complete_fh, ">>", $complete_fn or die "$complete_fh: $!"; 
+   open my $complete_fh, ">>", $complete_fn or die "$complete_fn: $!"; 
    # Add completes to existing file.
    $complete_csv->say ($complete_fh, $_) for @completes;
    close $complete_fh or die "add_completed: Could not close file $complete_fn: $!";  \
@@ -144,12 +149,12 @@ sub  read_new
    my $s_fn = 'SQL_' . $master_filename;
    
    my $csv = Text::CSV_XS->new ({ binary => 1 });
-   open my $ion, "<", $s_fn or die "cannot open $s_fn : $!";
+   open my $ion, "<", $s_fn or die "read_new: Cannot open $s_fn : $!";
 
-   my @new_rows; 
+   my @newrows; 
    while (my $row = $csv->getline ($ion)) {
       
-      push @new_rows, $row;
+      push @newrows, $row;
       
    }
    close $ion or die "no close for $s_fn: $!";
@@ -159,7 +164,7 @@ sub  read_new
      
 sub append_records
 {
-   my $newrows = @{$_[0]};  
+   my @newrows = @{$_[0]};  
    my $master_filename = $_[1];
     
    # Create csv object
