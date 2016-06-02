@@ -3,9 +3,8 @@
 -Week Out (+14)
 -App Created since a year ago
 --Excludes appt. created yesterday.
-4.1.15 - rewrote query to try to make report run faster;1.22.15 - For Cheryl to add in Policy# and DOB and take out max verify date;7.25.14 - For Cheryl Moya to kind of mirror existing report UNMH - Schedule Review but for all depts; 
-to do this had to rewrite because the original only wanted 4th floor activities; 
-put back to SQL due to all the exclusions btw locations and activities*/
+-Revised Jun 2016 - spurious fields, comments and left-outers.
+*/
 DECLARE @TwoWeeksOut VARCHAR(10);
 DECLARE @YearAgo VARCHAR(8);
 DECLARE @Yesterday VARCHAR(8);
