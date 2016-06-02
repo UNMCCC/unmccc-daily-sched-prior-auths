@@ -1,0 +1,1 @@
+schtasks /create /tn DailyScheduleAllDeps /tr c:\DailySchedAllDept\reports-daily-schedule-all-deps.cmd /sc weekly /d MON,TUE,WED,THU,FRI /st 04:15  /ed 02/16/2037
