@@ -14,34 +14,30 @@ Set @Yesterday = CONVERT(VARCHAR(10),dateadd(DAY,-1,GETDATE()),112);
 Set @Today = CONVERT(VARCHAR(10),GETDATE(),112);
 
 SELECT DISTINCT CONVERT(CHAR(10),Sch.APP_DTTM,101) AS [APPT DATE], 
---LTRIM(SUBSTRING(CONVERT(CHAR(20),Sch.APP_DTTM,100),13,19)) AS [SCHTIME],
-CONVERT(CHAR(10),Sch.Create_DtTm, 101) AS CREATED,
+--CONVERT(CHAR(10),Sch.Create_DtTm, 101) AS CREATED,
 IDA AS [MRN], 
- dbo.fn_GetPatientName(PAT.Pat_ID1, 'NAMELFM') AS PAT_NAME,
+ QUOTENAME(dbo.fn_GetPatientName(PAT.Pat_ID1, 'NAMELFM'), '"')  AS PAT_NAME,
 Staff.Last_Name AS [LOCATION], 
 sch.ACTIVITY, 
---ISNULL(REPLACE(RTRIM(S2.First_Name) + ' ' + RTRIM(S2.Last_Name), ',', ' '), '') AS ATTENDING, 
 General_Primary_Payer_Name as PrimPayer,
 sch.Notes as [NOTES]
 
-from 
- Schedule Sch WITH(NOLOCK)
+from  Schedule Sch WITH(NOLOCK)
 LEFT OUTER JOIN Admin A WITH(NOLOCK) ON Sch.Pat_ID1 = A.Pat_ID1
 LEFT OUTER JOIN vw_PatientInsurances VWPAT WITH(NOLOCK) ON Sch.Pat_ID1 = VWPAT.Pat_ID1
 LEFT OUTER JOIN vw_Patient PAT WITH(NOLOCK) ON Sch.PAT_ID1 = PAT.pat_id1
 left outer join Staff with(nolock) on Sch.Location = Staff.Staff_ID
 left outer join Staff S1 with(nolock) on Sch.Staff_ID = S1.Staff_ID
-left outer join Staff s2 with(nolock) on A.Attending_Md_Id = s2.Staff_ID
 
 WHERE
   -- chemo locations
-    Staff.Staff_ID=286 OR Staff.Staff_ID=287 
+   ( Staff.Staff_ID=286 OR Staff.Staff_ID=287 
     OR Staff.Staff_ID=288 OR Staff.Staff_ID=481 	
    OR Staff.Staff_ID=637 OR Staff.Staff_ID=666 
    OR Staff.Staff_ID=980 
    OR (Staff.Staff_ID>=571 AND Staff.Staff_ID<=586) 
    OR (Staff.Staff_ID>=593 AND Staff.Staff_ID<=607) 
-   OR (Staff.Staff_ID>=994 AND Staff.Staff_ID<=1006)
+   OR (Staff.Staff_ID>=994 AND Staff.Staff_ID<=1006) )
 	
 and (sch.Activity NOT LIKE '%psyintern%'
 	AND sch.Activity NOT LIKE '%wound%' 
@@ -49,9 +45,9 @@ and (sch.Activity NOT LIKE '%psyintern%'
 	AND sch.Activity NOT LIKE '%nurse%' 
 	AND sch.Activity NOT LIKE '%nutri%' 
 	AND sch.Activity NOT LIKE '%NuCon%' 
-	--AND Activity NOT LIKE '%lbcon%'/*not billable per Ballinger, lab draw*/
 	AND sch.Activity NOT LIKE 'MEDRC'
-	AND sch.Activity NOT LIKE 'Fin%')
+	AND sch.Activity NOT LIKE 'Fin%'
+	AND sch.Activity NOT LIKE 'Chemo Tch%')
 	and IDA not in ('', '0000') 
 	and sch.Version = 0
 
