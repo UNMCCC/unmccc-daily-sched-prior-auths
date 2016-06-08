@@ -7,6 +7,8 @@
 #     The six new csv files from queries
 #     The six completed files to log
 #
+#  Inputs:  Files path, as argument.  Unix style. I.e  C:/Windows/system32/
+#
 #  Description:
 # 
 # For each file (mo/ro; chemo; medicare [ x2] ) :
@@ -21,6 +23,8 @@
 #
 use strict;
 use warnings;
+
+my $path = $ARGV[0];
 
 my @master_files = ('MO_and_RO_WeekOut_PriorAuths.csv',
                                'MO_and_RO_AddOn_PriorAuths.csv',
@@ -55,11 +59,9 @@ foreach my $m_fn (@master_files){
 
 sub get_completes
 {
-#  use POSIX qw(strftime);
- #  my $today = strftime "%m/%d/%Y", localtime;
-   my $master_filename = shift;   
-  
-   open my $iom, '<', $master_filename or die "cannot open $master_filename: $!";
+   my $master_filename = $path . shift @_;
+   
+   open my $iom, '<', $master_filename or die "cannot open  $master_filename: $!";
 
    my @rows;
    
@@ -71,7 +73,7 @@ sub get_completes
            push @rows, $master_row;
       }
    }
-   close $iom or die "no close for $master_filename: $!";
+   close $iom or die "no close for  $master_filename: $!";
 
    return (@rows);
    
@@ -79,19 +81,18 @@ sub get_completes
 
 sub get_pendings
 {
-   my $master_filename = shift;
+   my $master_filename = $path . shift @_;
    
-   open my $iom, '<', $master_filename or die "cannot open $master_filename: $!";
+   open my $iom, '<',  $master_filename or die "cannot open  $master_filename: $!";
 
    my @rows;
    
    while (my $master_row = <$iom>) {
       
       my @mrow = split(/,/, $master_row);
-      print "get_pendings: INS $mrow[7] \n"; 
-      my $var =  $mrow[9] ; # was 7
+     
+      my $var =  $mrow[9] ;   # PCC NOTES is at position 10 cause of the comma separating the last name, first name in the PAT NAME field
       if ( $var !~ /COMPLETE|DENIED|NO PA NEEDED|NO PA\/REF NEEDED|APPEAL/i ) {   #
-      ##    print "get_pendings: Pending Row  $mrow[7] \n";
           push @rows, $master_row;
       }
       
@@ -106,13 +107,12 @@ sub add_completed
 {
    my @completes = @{$_[0]};
    my $master_filename = $_[1];
-   my $complete_fn = 'COMPLETE_' . $master_filename;
+   my $complete_fn = $path . 'COMPLETE_' . $master_filename;
   # Open the completes. 
    open my $complete_fh, ">>", $complete_fn or die "$complete_fn: $!"; 
    foreach my $el (@completes)
    {
-   ##   print "add_completed: Element Row: $el";
-    print $complete_fh "$el"; # Print each entry in our array to the file
+     print $complete_fh "$el"; 
    }
    close $complete_fh or die "add_completed: Could not close file $complete_fn: $!";
    return;
@@ -121,8 +121,8 @@ sub add_completed
 
 sub  erase_master
 {
-    my $fname = shift;
-    unlink $fname or warn "erase_master: Could not erase $fname: $!";
+    my $fname = $path . shift @_;
+    unlink  $fname or warn "erase_master: Could not erase  $fname: $!";
     return;
     
 }
@@ -131,16 +131,15 @@ sub pendings_to_master
 {
      
    my @rows = @{$_[0]};
-   my $master_filename = $_[1];
+   my $master_filename = $path . $_[1];
    
-   # Open the new master filename
    open my $master_fh, ">>", $master_filename or die "$master_filename: $!"; 
 
    foreach my $el (@rows)
    {
-     print $master_fh "$el"; # Print each entry in our array to the file
+     print $master_fh "$el"; 
    }
-   close $master_fh or die "pendings_to_master: Could not close file $master_filename: $!";  \
+   close $master_fh or die "pendings_to_master: Could not close file  $master_filename: $!";  \
    
    return;
      
@@ -150,9 +149,9 @@ sub  read_new
 {
  
    my $master_filename = shift;
-   my $s_fn = 'SQL_' . $master_filename;   
+   my $s_fn =  $path . 'SQL_' . $master_filename;   
 
-   open my $ion, '<', $s_fn or die "read_new: Cannot open $s_fn : $!";
+   open my $ion, '<', $s_fn or die "read_new: Cannot open  $s_fn : $!";
 
    my @newrows; 
       
@@ -168,10 +167,10 @@ sub  read_new
 sub append_records
 {
    my @newrows = @{$_[0]};  
-   my $master_filename = $_[1];
+   my $master_filename = $path . $_[1];
 
    # Open the master. 
-   open my $master_fh, ">>", $master_filename or die "$master_filename: $!"; 
+   open my $master_fh, ">>",  $master_filename or die "$master_filename: $!"; 
    
    # Add completes to existing file.
    foreach my $el (@newrows)

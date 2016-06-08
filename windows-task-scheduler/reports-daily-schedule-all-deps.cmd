@@ -6,4 +6,4 @@ sqlcmd -U {user} -P{passwd} -S {DBInstance} -i {PATH}\SchedRev_AddOn_MOandRO.sql
 sqlcmd -U {user} -P{passwd} -S {DBInstance} -i {PATH}\SchedRev2WeekOutMOandRO.sql -s"," -h-1 -W -o {PATH}\SQL_MO_and_RO_WeekOut_PriorAuths.csv
 sqlcmd -U {user} -P{passwd} -S {DBInstance} -i {PATH}\SchedRev2WeekOutMedicare.sql -s"," -h-1 -W -o {PATH}\SQL_MEDICARE_WeekOut_PriorAuths.csv
 sqlcmd -U {user} -P{passwd} -S {DBInstance} -i {PATH}\SchedRevAddOnMedicare.sql -s"," -h-1 -W -o {PATH}\SQL_MEDICARE_AddOn_PriorAuths.csv
-C:\Dwimperl\perl\bin\perl.exe Prior-Auths-merge-and-split.pl
+C:\Dwimperl\perl\bin\perl.exe {PATH}\Prior-Auths-merge-and-split.pl "{PATH}"  2>perlrunlog.txt
