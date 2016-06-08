@@ -4,6 +4,8 @@
 ---- appts made yesterday 
 -----DOS to be between today to 2weeks
 -Revised Jun 2016 - spurious fields, comments and left-outers.*/
+
+SET NOCOUNT ON;
 DECLARE @TwoWeeksOut VARCHAR(10);
 DECLARE @Today VARCHAR(10)
 DECLARE @Yesterday VARCHAR(8);

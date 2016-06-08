@@ -5,6 +5,7 @@
 --Excludes appt. created yesterday.
 -Revised Jun 2016 - spurious fields, comments and left-outers.
 */
+SET NOCOUNT ON;
 DECLARE @TwoWeeksOut VARCHAR(10);
 DECLARE @YearAgo VARCHAR(8);
 DECLARE @Yesterday VARCHAR(8);
@@ -14,7 +15,7 @@ Set @YearAgo = CONVERT(VARCHAR(10),dateadd(YEAR,-1,GETDATE()),112);
 Set @Yesterday = CONVERT(VARCHAR(10),dateadd(DAY,-1,GETDATE()),112);
 
 SELECT DISTINCT CONVERT(CHAR(10),Sch.APP_DTTM,101) AS [APPT DATE], 
-CONVERT(CHAR(10),Sch.Create_DtTm, 101) AS CREATED,
+--CONVERT(CHAR(10),Sch.Create_DtTm, 101) AS CREATED,
 IDA AS [MRN], 
 QUOTENAME(dbo.fn_GetPatientName(PAT.Pat_ID1, 'NAMELFM'), '"')  AS PAT_NAME,
 Staff.Last_Name AS [LOCATION], 

@@ -4,6 +4,7 @@
 -Add-Ons
 -App Created yesterday, for today thru 2 weeks
 */
+SET NOCOUNT ON;
 DECLARE @TwoWeeksOut VARCHAR(10);
 DECLARE @Yesterday VARCHAR(8);
 DECLARE @Today VARCHAR(10)

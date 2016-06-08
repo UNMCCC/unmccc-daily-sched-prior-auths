@@ -5,6 +5,7 @@
 --Excludes appt. created yesterday.
 -Revised Jun 2016 - spurious fields, comments and left-outers.
 */
+SET NOCOUNT ON;
 DECLARE @TwoWeeksOut VARCHAR(10);
 DECLARE @YearAgo VARCHAR(8);
 DECLARE @Yesterday VARCHAR(8);
