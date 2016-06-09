@@ -26,12 +26,12 @@ use warnings;
 
 my $path = $ARGV[0];
 
-my @master_files = ('MO_and_RO_WeekOut_PriorAuths.csv',
-                               'MO_and_RO_AddOn_PriorAuths.csv',
-                               'CHEMO_WeekOut_PriorAuths.csv',
-                               'CHEMO_AddOn_PriorAuths.csv',
-                               'MEDICARE_WeekOut_PriorAuths.csv',
-                               'MEDICARE_AddOn_PriorAuths.csv');
+my @master_files = ('MO_and_RO_WeekOut.csv',
+                               'MO_and_RO_AddOn.csv',
+                               'Chemo_WeekOut.csv',
+                               'Chemo_AddOn.csv',
+                               'Medicare_WeekOut.csv',
+                               'Medicare_AddOn.csv');
                                
 foreach my $m_fn (@master_files){
    
