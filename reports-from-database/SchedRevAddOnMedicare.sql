@@ -12,8 +12,12 @@ DECLARE @Yesterday VARCHAR(8);
 
 Set @TwoWeeksOut = CONVERT(VARCHAR(10),dateadd(DAY,13,GETDATE()),112);
 Set @Today = CONVERT(VARCHAR(10),GETDATE(),112);
-Set @Yesterday = CONVERT(VARCHAR(10),dateadd(DAY,-1,GETDATE()),112);
-
+--Set @Yesterday = CONVERT(VARCHAR(10),dateadd(DAY,-1,GETDATE()),112);
+Set @Yesterday = CONVERT(VARCHAR(10),DATEADD(DAY, CASE (DATEPART(WEEKDAY, GETDATE()) + @@DATEFIRST) % 7 
+                        WHEN 1 THEN -2 
+                        WHEN 2 THEN -3 
+                        ELSE -1 
+                    END, DATEDIFF(DAY, 0, GETDATE())),112);
 SELECT DISTINCT CONVERT(CHAR(10),Sch.APP_DTTM,101) AS [APPT DATE], 
 --CONVERT(CHAR(10),Sch.Create_DtTm, 101) AS CREATED,
 IDA AS [MRN], 
