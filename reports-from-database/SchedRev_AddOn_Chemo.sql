@@ -4,12 +4,6 @@
 -Add-Ons
 -App Created yesterday, for today thru 2 weeks
 */
-
-SELECT  DATEADD(DAY, CASE (DATEPART(WEEKDAY, GETDATE()) + @@DATEFIRST) % 7 
-                        WHEN 1 THEN -2 
-                        WHEN 2 THEN -3 
-                        ELSE -1 
-                    END, DATEDIFF(DAY, 0, GETDATE()));
 SET NOCOUNT ON;
 DECLARE @Today VARCHAR(10)
 DECLARE @TwoWeeksOut VARCHAR(10);
